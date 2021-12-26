@@ -2,7 +2,7 @@
 
 ;; Filename: sdcv.el
 ;; Description: Interface for sdcv (StartDict console version).
-;; Package-Requires: ((emacs "25.1") (posframe "1.1.2"))
+;; Package-Requires: ((emacs "25.1"))
 ;; Author: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
@@ -69,7 +69,7 @@
 ;;
 ;;      sudo aptitude install stardict sdcv -y
 ;;
-;; And make sure you have installed `posframe.el'.
+;; Optionally, you can install `posframe.el'.
 ;; You can get it from:
 ;; https://raw.githubusercontent.com/tumashu/posframe/master/posframe.el
 ;;
@@ -209,11 +209,14 @@
 
 ;;; Require
 
+(require 'cl-lib)
 (require 'json)
-(require 'subr-x)
 (require 'outline)
-(require 'posframe)
+(require 'subr-x)
 (require 'subword)
+
+(declare-function posframe-show "ext:posframe")
+(declare-function posframe-delete "ext:posframe")
 
 ;;; Code:
 
@@ -507,6 +510,9 @@ The result will be displayed in buffer named with
 
 (defun sdcv-search-simple (&optional word)
   "Search WORD simple translate result."
+  (unless (featurep 'posframe)
+    (user-error "Install posframe package"))
+
   (let ((result (sdcv-search-with-dictionary word sdcv-dictionary-simple-list)))
     ;; Show tooltip at point if word fetch from user cursor.
     (posframe-show
